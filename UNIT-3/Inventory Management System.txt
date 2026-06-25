@@ -1,0 +1,77 @@
+import csv
+import os
+FILE = "inventory.csv"
+if not os.path.exists(FILE):
+    with open(FILE, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["ID", "Name", "Quantity", "Price"])
+def add_product():
+    with open(FILE, "a", newline="") as f:
+        w = csv.writer(f)
+        pid = input("Enter Product ID: ")
+        name = input("Enter Name: ")
+        qty = input("Enter Quantity: ")
+        price = input("Enter Price: ")
+        w.writerow([pid, name, qty, price])
+        print("Product Added")
+def view_products():
+    with open(FILE, "r") as f:
+        r = csv.reader(f)
+        print("\nInventory:")
+        for row in r:
+            print(row)
+def search_product():
+    pid = input("Enter Product ID: ")
+    found = False
+    with open(FILE, "r") as f:
+        for row in csv.reader(f):
+            if row[0] == pid:
+                print("Found:", row)
+                found = True
+    if not found:
+        print("Not Found")
+def update_product():
+    pid = input("Enter Product ID: ")
+    rows = []
+    found = False
+    with open(FILE, "r") as f:
+        for row in csv.reader(f):
+            if row[0] == pid:
+                qty = input("Enter New Quantity: ")
+                price = input("Enter New Price: ")
+                row[2], row[3] = qty, price
+                found = True
+            rows.append(row)
+    with open(FILE, "w", newline="") as f:
+        csv.writer(f).writerows(rows)
+    print("Updated" if found else "Not Found")
+def delete_product():
+    pid = input("Enter Product ID: ")
+    rows = []
+    found = False
+    with open(FILE, "r") as f:
+        for row in csv.reader(f):
+            if row[0] != pid:
+                rows.append(row)
+            else:
+                found = True
+    with open(FILE, "w", newline="") as f:
+        csv.writer(f).writerows(rows)
+print("Deleted" if found else "Not Found")
+while True:
+    print("\n1.Add 2.View 3.Search 4.Update 5.Delete 6.Exit")
+    ch = input("Choice: ")
+    if ch == "1":
+        add_product()
+    elif ch == "2":
+        view_products()
+    elif ch == "3":
+        search_product()
+    elif ch == "4":
+        update_product()
+    elif ch == "5":
+        delete_product()
+    elif ch == "6":
+        break
+    else:
+        print("Invalid Choice")
